@@ -1,0 +1,58 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/employeedb
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  mail:
+    #    host: smtp.gmail.com
+    #    port: 587
+    #    username: ${MAIL_USERNAME}
+    #    password: ${MAIL_PASSWORD}
+    #    properties:
+    #      mail:
+    #        smtp:
+    #          auth: true
+    #          starttls:
+    #            enable: true
+    #          ssl.trust: smtp.gmail.com
+    #        connectiontimeout: 5000
+    #        timeout: 3000
+    #        writetimeout: 5000
+
+    host: localhost
+    port: 1025
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          trust: "*"
+        auth: true
+        starttls:
+          enable: true
+        connectiontimeout: 5000
+        timeout: 3000
+        writetimeout: 5000
+
+application:
+  security:
+    jwt:
+      secret-key: ${JWT_SECRET_KEY}
+      expiration: 86400000
+  mailing:
+    frontend:
+      activation-url: http://localhost:4200/activate-account
+      resetPassword-url: http://localhost:4200/reset-password
+
+server:
+  port: 8082
