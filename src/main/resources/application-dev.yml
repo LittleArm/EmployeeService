@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5433/employeedb
+    url: jdbc:postgresql://localhost:5432/employeedb
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
     driver-class-name: org.postgresql.Driver
@@ -45,6 +45,8 @@ spring:
         writetimeout: 5000
 
 application:
+  service:
+    url: http://localhost:8081/api/user
   security:
     jwt:
       secret-key: ${JWT_SECRET_KEY}
