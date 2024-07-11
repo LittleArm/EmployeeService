@@ -30,4 +30,18 @@ public class UserServiceClient {
         );
         return response.getBody();
     }
+
+    public void updateUser(User user, String jwtToken) {
+        String url = userServiceUrl + "/update";
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + jwtToken);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<User> entity = new HttpEntity<>(user,headers);
+        restTemplate.exchange(
+                url,
+                HttpMethod.PUT,
+                entity,
+                Void.class
+        );
+    }
 }
