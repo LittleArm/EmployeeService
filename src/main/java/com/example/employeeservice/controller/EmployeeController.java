@@ -6,7 +6,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -21,8 +28,7 @@ public class EmployeeController {
             @RequestBody Employee employee,
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader
     ) {
-        String jwtToken = authorizationHeader.substring(7);
-        employeeService.registerEmployee(employee, jwtToken);
+        employeeService.registerEmployee(employee);
     }
 
     @GetMapping("/all")
@@ -33,13 +39,21 @@ public class EmployeeController {
         return new ResponseEntity<>(employees, HttpStatus.OK);
     }
 
+    @GetMapping("/find")
+    public ResponseEntity<Employee> getEmployeeByEmail(
+            @RequestParam String email,
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader
+    ) {
+        Employee employee = employeeService.findEmployee(email);
+        return new ResponseEntity<>(employee, HttpStatus.OK);
+    }
+
     @PutMapping("/update")
     public ResponseEntity<Employee> updateEmployee(
             @RequestBody Employee employee,
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader
     ) {
-        String jwtToken = authorizationHeader.substring(7);
-        Employee updatedEmployee = employeeService.updateEmployee(employee, jwtToken);
+        Employee updatedEmployee = employeeService.updateEmployee(employee);
         return new ResponseEntity<>(employee, HttpStatus.OK);
     }
 

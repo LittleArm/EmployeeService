@@ -6,7 +6,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -32,23 +31,22 @@ public class JwtFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String userEmail;
+        final List<String> authority;
         jwt = authHeader.substring(7);
         userEmail = jwtService.extractUsername(jwt);
-        if (request.getServletPath().contains("/register") || request.getServletPath().contains("/delete")) {
-            final List<String> authority = jwtService.extractAuthorities(jwt);
-            if (authority.contains("ADMIN")){
-                filterChain.doFilter(request, response);
-                return;
-            }
-            throw new IllegalStateException("No authority");
-        }
+        authority = jwtService.extractAuthorities(jwt);
+
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+            UserDetails userDetails = null;
+            if (!authority.contains("ADMIN")) {
+                userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+            }
             if (jwtService.isTokenValid(jwt, userDetails)) {
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                JwtAuthenticationToken authToken = new JwtAuthenticationToken(
                         userDetails,
                         null,
-                        userDetails.getAuthorities()
+                        jwt,
+                        authority.contains("ADMIN") ? List.of(() -> "ROLE_ADMIN") : userDetails.getAuthorities()
                 );
                 authToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(request)
@@ -56,6 +54,15 @@ public class JwtFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
+
+        if (request.getServletPath().contains("/register") || request.getServletPath().contains("/delete")) {
+            if (authority.contains("ADMIN")){
+                filterChain.doFilter(request, response);
+                return;
+            }
+            throw new IllegalStateException("No authority");
+        }
+
         filterChain.doFilter(request, response);
     }
 }

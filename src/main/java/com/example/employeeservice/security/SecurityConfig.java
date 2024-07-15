@@ -33,7 +33,8 @@ public class SecurityConfig {
                                 "/register",
                                 "/update",
                                 "/all",
-                                "/delete"
+                                "/delete",
+                                "/find"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
