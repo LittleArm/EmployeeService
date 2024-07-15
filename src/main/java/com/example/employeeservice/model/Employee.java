@@ -1,16 +1,22 @@
 package com.example.employeeservice.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
 import java.security.Principal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -18,7 +24,7 @@ import java.util.Collections;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "employee")
+@Table(name = "_user")
 @EntityListeners(AuditingEntityListener.class)
 public class Employee implements UserDetails, Principal, Serializable {
     @Id
@@ -27,26 +33,45 @@ public class Employee implements UserDetails, Principal, Serializable {
     private Long id;
     private String firstName;
     private String lastName;
+    private LocalDate dateOfBirth;
+    private String jobTitle;
+    private String imageUrl;
     @Column(unique = true)
     private String email;
-    private String jobTitle;
-    private LocalDate dateOfBirth;
-    private String imageUrl;
-
-    @Column(nullable = false, updatable = false)
     private String employeeCode;
+    private String password;
+    private Boolean locked;
+    private Boolean enabled;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE )
+    private List<Role> roles;
 
-    private Boolean locked = false;
-    private Boolean enabled = true;
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdDate;
+
+    @LastModifiedDate
+    @Column(insertable = false)
+    private LocalDateTime lastModifiedDate;
+
 
     @Override
+    public String getName() {
+        return email;
+    }
+    @ManyToOne
+    @JoinColumn(name = "department_id")
+    @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList();
+        return this.roles
+                .stream()
+                .map(r -> new SimpleGrantedAuthority(r.getName()))
+                .collect(Collectors.toList());
     }
 
     @Override
     public String getPassword() {
-        return null;
+        return password;
     }
 
     @Override
@@ -74,8 +99,7 @@ public class Employee implements UserDetails, Principal, Serializable {
         return enabled;
     }
 
-    @Override
-    public String getName() {
-        return email;
+    public String getFullName() {
+        return firstName + " " + lastName;
     }
 }

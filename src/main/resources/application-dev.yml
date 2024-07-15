@@ -1,8 +1,10 @@
+server:
+  port: 8082
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/employeedb
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
+    url: jdbc:postgresql://localhost:5432/employeemanager3
+    username: postgres
+    password: huuhuy1607
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -14,47 +16,29 @@ spring:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   mail:
-    #    host: smtp.gmail.com
-    #    port: 587
-    #    username: ${MAIL_USERNAME}
-    #    password: ${MAIL_PASSWORD}
-    #    properties:
-    #      mail:
-    #        smtp:
-    #          auth: true
-    #          starttls:
-    #            enable: true
-    #          ssl.trust: smtp.gmail.com
-    #        connectiontimeout: 5000
-    #        timeout: 3000
-    #        writetimeout: 5000
-
-    host: localhost
-    port: 1025
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
+    host: smtp.gmail.com
+    port: 587
+    username: huy03py@gmail.com
+    password: odabdrlkwrvtiprh
     properties:
       mail:
         smtp:
-          trust: "*"
-        auth: true
-        starttls:
-          enable: true
+          auth: true
+          starttls:
+            enable: true
+          ssl.trust: smtp.gmail.com
         connectiontimeout: 5000
         timeout: 3000
         writetimeout: 5000
 
 application:
   service:
-    url: http://localhost:8081/api/user
+    url: http://localhost:8081/api  # Thêm biến cấu hình này
   security:
     jwt:
-      secret-key: ${JWT_SECRET_KEY}
+      secret-key: "VGhpcyBpcyBhIHNlY3gg5gdcdfwcccưdugf4JldCBrZXk="
       expiration: 86400000
   mailing:
     frontend:
       activation-url: http://localhost:4200/activate-account
       resetPassword-url: http://localhost:4200/reset-password
-
-server:
-  port: 8082

@@ -33,7 +33,9 @@ public class SecurityConfig {
                                 "/register",
                                 "/update",
                                 "/all",
-                                "/delete"
+                                "/delete",
+                                "/employee/**",
+                                "/employee/all"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

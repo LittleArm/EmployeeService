@@ -1,4 +1,4 @@
-package com.example.employeeservice.config;
+package com.example.employeeservice.configs;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +17,7 @@ import org.springframework.web.client.RestTemplate;
 public class BeanConfig {
 
     private final UserDetailsService userDetailsService;
-    
+
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();
