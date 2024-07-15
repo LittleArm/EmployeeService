@@ -5,8 +5,6 @@ import com.example.employeeservice.exception.UserNotFoundException;
 import com.example.employeeservice.model.Employee;
 import com.example.employeeservice.model.User;
 import com.example.employeeservice.repository.EmployeeRepository;
-import lombok.AllArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,9 +23,9 @@ public class EmployeeService {
         this.userServiceClient = userServiceClient;
     }
 
-    public void registerEmployee(Employee employee, String jwtToken) {
+    public void registerEmployee(Employee employee) {
         employee.setEmployeeCode(UUID.randomUUID().toString());
-        User user = userServiceClient.getUserByEmail(employee.getEmail(), jwtToken);
+        User user = userServiceClient.getUserByEmail(employee.getEmail());
         if (user != null && user.getEnabled()) {
             employeeRepository.save(employee);
         } else {
@@ -35,12 +33,12 @@ public class EmployeeService {
         }
     }
 
-    public Employee updateEmployee(Employee employee, String jwtToken) {
-        User user = userServiceClient.getUserByEmail(employee.getEmail(), jwtToken);
+    public Employee updateEmployee(Employee employee) {
+        User user = userServiceClient.getUserByEmail(employee.getEmail());
         if (user != null && user.getEnabled()) {
             user.setFirstName(employee.getFirstName());
             user.setLastName(employee.getLastName());
-            userServiceClient.updateUser(user, jwtToken);
+            userServiceClient.updateUser(user);
             Employee savedEmployee = findEmployee(employee.getEmail());
             savedEmployee.setDateOfBirth(employee.getDateOfBirth());
             savedEmployee.setFirstName(employee.getFirstName());
@@ -55,7 +53,7 @@ public class EmployeeService {
     
     public Employee findEmployee(String email) {
         return employeeRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("Employee was not found"));
+                .orElse(null);
     }
 
     public List<Employee> findAllEmployees() {
