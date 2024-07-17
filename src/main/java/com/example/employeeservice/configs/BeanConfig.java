@@ -1,4 +1,4 @@
-package com.example.employeeservice.config;
+package com.example.employeeservice.configs;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

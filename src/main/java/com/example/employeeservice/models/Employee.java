@@ -1,4 +1,4 @@
-package com.example.employeeservice.model;
+package com.example.employeeservice.models;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;

@@ -1,6 +1,6 @@
-package com.example.employeeservice.repository;
+package com.example.employeeservice.repositories;
 
-import com.example.employeeservice.model.Employee;
+import com.example.employeeservice.models.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
