@@ -27,7 +27,7 @@ public class UserServiceClient {
     public UserDTO getUserByEmail(String email) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String jwtToken = ((JwtAuthenticationToken) authentication).getToken();
-        String url = userServiceUrl + "/email?email=" + email;
+        String url = userServiceUrl + "/users/" + email;
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + jwtToken);
         HttpEntity<String> entity = new HttpEntity<>(headers);
@@ -43,7 +43,7 @@ public class UserServiceClient {
     public void updateUser(UserDTO userDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String jwtToken = ((JwtAuthenticationToken) authentication).getToken();
-        String url = userServiceUrl + "/update";
+        String url = userServiceUrl + "/users";
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + jwtToken);
         headers.setContentType(MediaType.APPLICATION_JSON);
