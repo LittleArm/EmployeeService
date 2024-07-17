@@ -28,13 +28,18 @@ public class JwtFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
+        String servletPath = request.getServletPath();
+
+        if (servletPath.contains("/swagger-ui") || servletPath.contains("/v3")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         final String authHeader = request.getHeader("Authorization");
-        final String jwt;
-        final String userEmail;
-        final List<String> authority;
-        jwt = authHeader.substring(7);
-        userEmail = jwtService.extractUsername(jwt);
-        authority = jwtService.extractAuthorities(jwt);
+
+        final String jwt = authHeader.substring(7);
+        final String userEmail = jwtService.extractUsername(jwt);
+        final List<String> authority = jwtService.extractAuthorities(jwt);
 
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = null;
@@ -55,8 +60,9 @@ public class JwtFilter extends OncePerRequestFilter {
             }
         }
 
-        if (request.getServletPath().contains("/register") || request.getServletPath().contains("/delete")) {
-            if (authority.contains("ADMIN")){
+        if (servletPath.contains("/employees") && request.getMethod().equals("POST") ||
+                servletPath.contains("/employees") && request.getMethod().equals("DELETE")) {
+            if (authority.contains("ADMIN")) {
                 filterChain.doFilter(request, response);
                 return;
             }
