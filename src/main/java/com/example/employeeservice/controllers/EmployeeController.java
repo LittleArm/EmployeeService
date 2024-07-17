@@ -1,7 +1,6 @@
 package com.example.employeeservice.controllers;
 
 import com.example.employeeservice.dtos.EmployeeDTO;
-import com.example.employeeservice.models.Employee;
 import com.example.employeeservice.services.EmployeeService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
