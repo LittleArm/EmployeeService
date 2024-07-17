@@ -63,12 +63,12 @@ public class EmployeeController {
         return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{email}")
     public ResponseEntity<?> deleteEmployee(
-            @PathVariable Long id,
+            @PathVariable String email,
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader
     ) {
-        employeeService.deleteEmployee(id);
+        employeeService.deleteEmployee(email);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
