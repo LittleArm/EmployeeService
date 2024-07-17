@@ -25,10 +25,20 @@ public class EmployeeService {
         this.userServiceClient = userServiceClient;
     }
 
-    public EmployeeDTO registerEmployee(Employee employee) {
-        employee.setEmployeeCode(UUID.randomUUID().toString());
-        UserDTO userDTO = userServiceClient.getUserByEmail(employee.getEmail());
+    public EmployeeDTO registerEmployee(EmployeeDTO employeeDTO) {
+        UserDTO userDTO = userServiceClient.getUserByEmail(employeeDTO.getEmail());
         if (userDTO != null && userDTO.getEnabled()) {
+            Employee employee = Employee.builder()
+                    .firstName(employeeDTO.getFirstName())
+                    .lastName(employeeDTO.getLastName())
+                    .email(employeeDTO.getEmail())
+                    .jobTitle(employeeDTO.getJobTitle())
+                    .dateOfBirth(employeeDTO.getDateOfBirth())
+                    .imageUrl(employeeDTO.getImageUrl())
+                    .employeeCode(UUID.randomUUID().toString())
+                    .locked(false)
+                    .enabled(true)
+                    .build();
             Employee savedEmployee = employeeRepository.save(employee);
             return convertToDTO(savedEmployee);
         } else {
@@ -49,19 +59,19 @@ public class EmployeeService {
         return convertToDTO(employee);
     }
 
-    public EmployeeDTO updateEmployee(Employee employee) {
-        UserDTO userDTO = userServiceClient.getUserByEmail(employee.getEmail());
+    public EmployeeDTO updateEmployee(EmployeeDTO employeeDTO) {
+        UserDTO userDTO = userServiceClient.getUserByEmail(employeeDTO.getEmail());
         if (userDTO != null && userDTO.getEnabled()) {
-            userDTO.setFirstName(employee.getFirstName());
-            userDTO.setLastName(employee.getLastName());
+            userDTO.setFirstName(employeeDTO.getFirstName());
+            userDTO.setLastName(employeeDTO.getLastName());
             userServiceClient.updateUser(userDTO);
-            Employee updatedEmployee = employeeRepository.findByEmail(employee.getEmail())
+            Employee updatedEmployee = employeeRepository.findByEmail(employeeDTO.getEmail())
                             .orElseThrow(() -> new RuntimeException("Employee not found"));
-            updatedEmployee.setDateOfBirth(employee.getDateOfBirth());
-            updatedEmployee.setFirstName(employee.getFirstName());
-            updatedEmployee.setLastName(employee.getLastName());
-            updatedEmployee.setImageUrl(employee.getImageUrl());
-            updatedEmployee.setJobTitle(employee.getJobTitle());
+            updatedEmployee.setDateOfBirth(employeeDTO.getDateOfBirth());
+            updatedEmployee.setFirstName(employeeDTO.getFirstName());
+            updatedEmployee.setLastName(employeeDTO.getLastName());
+            updatedEmployee.setImageUrl(employeeDTO.getImageUrl());
+            updatedEmployee.setJobTitle(employeeDTO.getJobTitle());
             employeeRepository.save(updatedEmployee);
             return convertToDTO(updatedEmployee);
         } else {

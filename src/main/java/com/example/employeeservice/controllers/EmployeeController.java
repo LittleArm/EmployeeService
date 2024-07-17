@@ -30,10 +30,10 @@ public class EmployeeController {
 
     @PostMapping
     public ResponseEntity<EmployeeDTO> registerEmployee(
-            @RequestBody Employee employee,
+            @RequestBody EmployeeDTO employeeDTO,
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader
     ) {
-        EmployeeDTO registeredEmployee = employeeService.registerEmployee(employee);
+        EmployeeDTO registeredEmployee = employeeService.registerEmployee(employeeDTO);
         return new ResponseEntity<>(registeredEmployee, HttpStatus.CREATED);
     }
 
@@ -56,10 +56,10 @@ public class EmployeeController {
 
     @PutMapping
     public ResponseEntity<EmployeeDTO> updateEmployee(
-            @RequestBody Employee employee,
+            @RequestBody EmployeeDTO employeeDTO,
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader
     ) {
-        EmployeeDTO updatedEmployee = employeeService.updateEmployee(employee);
+        EmployeeDTO updatedEmployee = employeeService.updateEmployee(employeeDTO);
         return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
     }
 
