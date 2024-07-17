@@ -1,9 +1,9 @@
-package com.example.employeeservice.model;
+package com.example.employeeservice.dtos;
 
 import lombok.Data;
 
 @Data
-public class User {
+public class UserDTO {
     private Long id;
     private String firstName;
     private String lastName;
