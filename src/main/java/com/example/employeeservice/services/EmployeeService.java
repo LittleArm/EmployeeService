@@ -27,7 +27,7 @@ public class EmployeeService {
 
     public EmployeeDTO registerEmployee(EmployeeDTO employeeDTO) {
         UserDTO userDTO = userServiceClient.getUserByEmail(employeeDTO.getEmail());
-        if (userDTO != null && userDTO.getEnabled()) {
+        if (userDTO != null) {
             Employee employee = Employee.builder()
                     .firstName(employeeDTO.getFirstName())
                     .lastName(employeeDTO.getLastName())
@@ -61,7 +61,7 @@ public class EmployeeService {
 
     public EmployeeDTO updateEmployee(EmployeeDTO employeeDTO) {
         UserDTO userDTO = userServiceClient.getUserByEmail(employeeDTO.getEmail());
-        if (userDTO != null && userDTO.getEnabled()) {
+        if (userDTO != null) {
             userDTO.setFirstName(employeeDTO.getFirstName());
             userDTO.setLastName(employeeDTO.getLastName());
             userServiceClient.updateUser(userDTO);
@@ -79,11 +79,10 @@ public class EmployeeService {
         }
     }
 
-    public void deleteEmployee(Long id) {
-        if (!employeeRepository.existsById(id)) {
-            throw new UserNotFoundException("Employee was not found");
-        }
-        employeeRepository.deleteEmployeeById(id);
+    public void deleteEmployee(String email) {
+        employeeRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("Employee was not found"));
+        employeeRepository.deleteEmployeeByEmail(email);
     }
 
     private EmployeeDTO convertToDTO(Employee employee) {
