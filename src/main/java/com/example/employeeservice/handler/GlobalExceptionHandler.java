@@ -42,17 +42,6 @@ public class GlobalExceptionHandler {
                 );
     }
 
-    @ExceptionHandler(MessagingException.class)
-    public ResponseEntity<ExceptionResponse> handleMessagingException(MessagingException exception) {
-        return ResponseEntity
-                .status(INTERNAL_SERVER_ERROR)
-                .body(
-                        ExceptionResponse.builder()
-                                .error(exception.getMessage())
-                                .build()
-                );
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ExceptionResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
         Set<String> errors = new HashSet<>();
@@ -70,6 +59,17 @@ public class GlobalExceptionHandler {
                 );
     }
 
+    @ExceptionHandler(MessagingException.class)
+    public ResponseEntity<ExceptionResponse> handleMessagingException(MessagingException exception) {
+        return ResponseEntity
+                .status(INTERNAL_SERVER_ERROR)
+                .body(
+                        ExceptionResponse.builder()
+                                .error(exception.getMessage())
+                                .build()
+                );
+    }
+    
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> handleException(Exception exception) {
         exception.printStackTrace();
