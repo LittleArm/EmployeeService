@@ -3,12 +3,8 @@ package com.example.employeeservice.handler;
 import jakarta.mail.MessagingException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.util.HashSet;
-import java.util.Set;
 
 import static com.example.employeeservice.handler.ErrorCodes.*;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -40,23 +36,6 @@ public class GlobalExceptionHandler {
                                 .errorCode(ILLEGAL_STATE.getCode())
                                 .errorDescription(ILLEGAL_STATE.getDescription())
                                 .error(exception.getMessage())
-                                .build()
-                );
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ExceptionResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
-        Set<String> errors = new HashSet<>();
-        exception.getBindingResult().getAllErrors()
-                .forEach(error -> {
-                    var errorMessage = error.getDefaultMessage();
-                    errors.add(errorMessage);
-                });
-        return ResponseEntity
-                .status(BAD_REQUEST)
-                .body(
-                        ExceptionResponse.builder()
-                                .validationErrors(errors)
                                 .build()
                 );
     }
