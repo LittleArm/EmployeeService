@@ -11,7 +11,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static com.example.employeeservice.handler.ErrorCodes.*;
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -69,7 +71,7 @@ public class GlobalExceptionHandler {
                                 .build()
                 );
     }
-    
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> handleException(Exception exception) {
         exception.printStackTrace();
