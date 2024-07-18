@@ -37,6 +37,10 @@ public class JwtFilter extends OncePerRequestFilter {
 
         final String authHeader = request.getHeader("Authorization");
 
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new IllegalStateException("Authorization Header is mandatory");
+        }
+
         final String jwt = authHeader.substring(7);
         final String userEmail = jwtService.extractUsername(jwt);
         final List<String> authority = jwtService.extractAuthorities(jwt);
