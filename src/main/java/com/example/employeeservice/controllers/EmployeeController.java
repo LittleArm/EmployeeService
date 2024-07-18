@@ -29,45 +29,41 @@ public class EmployeeController {
 
     @PostMapping
     public ResponseEntity<EmployeeDTO> registerEmployee(
-            @RequestBody EmployeeDTO employeeDTO,
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader
+            @RequestBody EmployeeDTO employeeDTO
     ) {
         EmployeeDTO registeredEmployee = employeeService.registerEmployee(employeeDTO);
         return new ResponseEntity<>(registeredEmployee, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<EmployeeDTO>> getAllEmployees (
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader
-    ) {
+    public ResponseEntity<List<EmployeeDTO>> getAllEmployees () {
         List<EmployeeDTO> employees = employeeService.findAllEmployees();
         return new ResponseEntity<>(employees, HttpStatus.OK);
     }
 
     @GetMapping("/{email}")
     public ResponseEntity<EmployeeDTO> getEmployeeByEmail(
-            @PathVariable String email,
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader
+            @PathVariable String email
     ) {
         EmployeeDTO employee = employeeService.findEmployee(email);
         return new ResponseEntity<>(employee, HttpStatus.OK);
     }
 
-    @PutMapping
+    @PutMapping("/{id}")
     public ResponseEntity<EmployeeDTO> updateEmployee(
-            @RequestBody EmployeeDTO employeeDTO,
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader
+            @PathVariable Long id,
+            @RequestBody EmployeeDTO employeeDTO
     ) {
+        employeeDTO.setId(id);
         EmployeeDTO updatedEmployee = employeeService.updateEmployee(employeeDTO);
         return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{email}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteEmployee(
-            @PathVariable String email,
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader
+            @PathVariable Long id
     ) {
-        employeeService.deleteEmployee(email);
+        employeeService.deleteEmployee(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
