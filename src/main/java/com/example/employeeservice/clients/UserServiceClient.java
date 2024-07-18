@@ -11,6 +11,9 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
@@ -31,13 +34,24 @@ public class UserServiceClient {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + jwtToken);
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        ResponseEntity<UserDTO> response = restTemplate.exchange(
-                url,
-                HttpMethod.GET,
-                entity,
-                UserDTO.class
-        );
-        return response.getBody();
+        try {
+            ResponseEntity<UserDTO> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    entity,
+                    UserDTO.class
+            );
+            return response.getBody();
+        } catch (HttpClientErrorException e) {
+            // Handle client error (4xx codes)
+            throw new IllegalStateException("User not found or bad request", e);
+        } catch (HttpServerErrorException e) {
+            // Handle server error (5xx codes)
+            throw new IllegalStateException("Server error while fetching user", e);
+        } catch (RestClientException e) {
+            // Handle other errors such as connectivity issues
+            throw new IllegalStateException("Error occurred while fetching user", e);
+        }
     }
 
     public void updateUser(UserDTO userDTO) {
